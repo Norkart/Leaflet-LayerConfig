@@ -1,8 +1,8 @@
-/*{
-	layers: [{
-
-	}]
-}*/
+/*
+leaflet-layerconfig
+Library that communicates with a web service/reads a stored JavaScript object and adds layers to a leaflet map.
+Copyright 2014 Norkart AS
+*/
 
 L.LayerConfig = L.Class.extend(
 {
@@ -126,7 +126,7 @@ L.LayerConfig = L.Class.extend(
 			}
 
 		};
-		this.fireEvent("completeLayerLoading");
+		this.fireEvent("stopLayerLoading");
 		return this;
 	},
 	addMarker: function(json, addTo) {
@@ -169,9 +169,9 @@ L.LayerConfig = L.Class.extend(
 	addLayerGroup: function(json, addTo) {
 		json.options = this._evalJsonOptions(json.options);
 		var l = L.layerGroup();
-		this.fireEvent("GroupLoadingStart");
+		this.fireEvent("GroupLoadingStart", layer: l);
 		this.addLayers(json, l);
-		this.fireEvent("GroupLoadingEnd");
+		this.fireEvent("GroupLoadingEnd", layer: l);
 		addTo.addLayer(l);
 		this.fireEvent("LayerLoaded", { layerType: "LayerGroup", name: json.name, layer: l });
 		return this;
@@ -180,9 +180,9 @@ L.LayerConfig = L.Class.extend(
 	addFeatureGroup: function(json, addTo) {
 		json.options = this._evalJsonOptions(json.options);
 		var l = L.featureGroup();
-		this.fireEvent("GroupLoadingStart");
+		this.fireEvent("GroupLoadingStart", layer: l);
 		this.addLayers(json, l);
-		this.fireEvent("GroupLoadingEnd");
+		this.fireEvent("GroupLoadingEnd", layer: l);
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
 		addTo.addLayer(l);

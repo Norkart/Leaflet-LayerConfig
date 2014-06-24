@@ -28,9 +28,9 @@
         },
         {
                 "type": "tilelayer",
-                "url": "http://b.tiles.mapbox.com/v3/torbjornav.hhni5j5f/{z}/{x}/{y}.png",
+                "url": "URL-TO-TILELAYER",
                 "options": {
-                    "attribution": "Mapbox"
+                    "attribution": "Public domain"
                 }
          },
          {
@@ -53,15 +53,7 @@
          },
          {
          	"type": "geojson",
-         	"url": "http://192.168.4.101/mellomlag.php?function=pointLastMonth&municipality=1719&apikey=AsD1x99"
-         },
-         {
-         	"type": "geojson",
-         	"url": "http://192.168.4.101/mellomlag.php?function=polygonLastMonth&municipality=1719&apikey=AsD1x99",
-         	"options": {
-         		"style": "function () { return { color: \"red\" }; };"
-         	}
-
+         	"url": "URL-TO-GEOJSON-SERVICE"
          },
          {
          	"type": "geojson",
