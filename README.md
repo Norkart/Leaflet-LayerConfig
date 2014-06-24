@@ -177,8 +177,7 @@ LayerGroup has a "layer" key containing the layers to be added to it. This is in
             "latLng": [63.43034, 10.38647]
         }
 
-    ],
-    "popupContent": "Kongens gate"
+    ]
 }
 ```
 ###Events
