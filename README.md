@@ -10,7 +10,7 @@ L.LayerConfig takes two arguments, the first one is either a URL or a object con
 The second argument is the map container or LayerGroup/FeatureGroup on which we add layers to.
 
 ```
-var layerConfig = L.layerConfig("layerconfig.json", map);
+var layerConfig = L.layerConfig(object or url to json file, map);
 ```
 
 ##JSON notation
