@@ -9,20 +9,29 @@ L.LayerConfig = L.Class.extend(
 	includes: L.Mixin.Events,
 	_map: null,
 	_json: null,
-	initialize: function(json, map) {
+	initialize: function(map) {
 		this._map = map;
+
+
+	},
+	parse: function (json) {
 		this._json = json;
+		
 		if(typeof json == "string") { // We take a string to mean we got an url;
 			var parent = this;
 			function success(data) {
-				parent.addLayers(JSON.parse(data));
+				var json = JSON.parse(data);
+				if(this._map.setView && json.center && json.zoom)
+					this._map.setView(json.center, json.zoom);
+				parent.addLayers(json);
 			};
 			this._ajaxRequest(json, success, function () {});
 		}
 		else {
+			if(this._map.setView && json.center && json.zoom)
+					this._map.setView(json.center, json.zoom);
 			this.addLayers(json);
 		}
-
 	},
 	_ajaxRequest: function (url, callback, onerror) {
 		var httpRequest;
@@ -80,11 +89,29 @@ L.LayerConfig = L.Class.extend(
 		}
 		return options;
 	},
+	_addLayer: function(layer, json, addTo) {
+		if(json.baseLayer && this._addedBaseLayer) {
+			
+		} 
+		else if(!json.baseLayer) {
+			addTo.addLayer(layer);
+		}
+		else {
+			this._addedBaseLayer = true;
+			addTo.addLayer(layer);
+			if(layer.bringToFront) {
+				layer.bringToFront();
+			}
+		}
+
+		this.fire("LayerLoaded", { type: json.type, name: json.name, layer: layer, baseLayer: json.baseLayer });
+	},
 	addLayers: function (json, addTo) {
 		if(!addTo)
 			addTo = this._map;
-		this.fireEvent("startLayerLoading");
-		for (var i = json.layers.length - 1; i >= 0; i--) {
+
+		this.fire("startLayerLoading");
+		for (var i = 0; i < json.layers.length; i++) {
 			var layer = json.layers[i];
 			switch (layer.type) {
 				case 'marker':
@@ -126,7 +153,7 @@ L.LayerConfig = L.Class.extend(
 			}
 
 		};
-		this.fireEvent("stopLayerLoading");
+		this.fire("stopLayerLoading");
 		return this;
 	},
 	addMarker: function(json, addTo) {
@@ -134,8 +161,7 @@ L.LayerConfig = L.Class.extend(
 		var l = L.marker(json.latLng, json.options);
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "CircleMarker", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 
 	},
@@ -146,7 +172,7 @@ L.LayerConfig = L.Class.extend(
 		var addGeoJSON = function (geojson, options, map) {
 			var l = L.geoJson(geojson,options);
 			addTo.addLayer(l);
-			parent.fireEvent("LayerLoaded", { layerType: "GeoJSON", name: json.name, layer: l });
+			parent._addLayer(l, json, addTo);
 		}
 		function onsuccess(data) {
 			addGeoJSON(JSON.parse(data),json.options,parent._map);
@@ -163,46 +189,43 @@ L.LayerConfig = L.Class.extend(
 		else {
 			throw new Error("URL or GeoJSON object expected");
 		}
+
 		return this;
 
 	},
 	addLayerGroup: function(json, addTo) {
 		json.options = this._evalJsonOptions(json.options);
 		var l = L.layerGroup();
-		this.fireEvent("GroupLoadingStart", layer: l);
+		this.fire("GroupLoadingStart", { layer: l });
 		this.addLayers(json, l);
-		this.fireEvent("GroupLoadingEnd", layer: l);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "LayerGroup", name: json.name, layer: l });
+		this.fire("GroupLoadingEnd", { layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 
 	},
 	addFeatureGroup: function(json, addTo) {
 		json.options = this._evalJsonOptions(json.options);
 		var l = L.featureGroup();
-		this.fireEvent("GroupLoadingStart", layer: l);
+		this.fire("GroupLoadingStart", { layer: l });
 		this.addLayers(json, l);
-		this.fireEvent("GroupLoadingEnd", layer: l);
+		this.fire("GroupLoadingEnd", { layer: l });
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "FeatureGroup", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 	},
 	addTileLayer: function (json, addTo) {
 		json.options = this._evalJsonOptions(json.options);
 		var l = L.tileLayer(json.url, json.options);
-		addTo.addLayer(l);
-		l.bringToFront();
-		this.fireEvent("LayerLoaded", { layerType: "TileLayer", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
+		
 		return this;
 	},
 	addWMS: function (json, addTo) {
 		json.options = this._evalJsonOptions(json.options);
 		var l = L.tileLayer.wms(json.url, json.options);
-		addTo.addLayer(l);
-		l.bringToFront();
-		this.fireEvent("LayerLoaded", { layerType: "TileLayer.WMS", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
+		
 		return this;
 	},
 	addCircleMarker: function (json, addTo) {
@@ -210,8 +233,7 @@ L.LayerConfig = L.Class.extend(
 		var l = L.circleMarker(json.latLng, json.options);
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "CircleMarker", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 	},
 	addCircle: function (json, addTo) {
@@ -219,8 +241,7 @@ L.LayerConfig = L.Class.extend(
 		var l = L.circle(json.latLng, json.radius, json.options);
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "Circle", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 	},
 	addRectangle: function (json, addTo) {
@@ -228,8 +249,7 @@ L.LayerConfig = L.Class.extend(
 		var l = L.rectangle(json.path, json.options);
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "Rectangle", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 	},
 	addPolygon: function (json, addTo) {
@@ -237,8 +257,7 @@ L.LayerConfig = L.Class.extend(
 		var l = L.polygon(json.path, json.options);
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "Polygon", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 	},
 	addLine: function (json, addTo) {
@@ -246,8 +265,7 @@ L.LayerConfig = L.Class.extend(
 		var l = L.polyline(json.path, json.options);
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "Line", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 	},
 	addLayer: function (json, addTo) {
@@ -255,8 +273,7 @@ L.LayerConfig = L.Class.extend(
 		var l = json.layer;
 		if(json.popupContent)
 			l.bindPopup(json.popupContent);
-		addTo.addLayer(l);
-		this.fireEvent("LayerLoaded", { layerType: "Layer", name: json.name, layer: l });
+		this._addLayer(l, json, addTo);
 		return this;
 	}
 }

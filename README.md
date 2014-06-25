@@ -14,10 +14,11 @@ var layerConfig = L.layerConfig(object or url to json file, map);
 ```
 
 ##JSON notation
-The object containing the information is pretty basic, here is a sample file adding only a marker.
+The object containing the information is pretty basic, here is a sample file adding only a marker and setting the map view to a coordinate and a zoomlevel. You can also set bounds if you want to fit the map view to always show some objects.
  ```
 {
-    
+    "center": [63.43048, 10.39508],
+    "zoom": 14, 
     "layers": [
         {
             "type": "marker",
