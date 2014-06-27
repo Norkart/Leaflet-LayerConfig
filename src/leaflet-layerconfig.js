@@ -30,6 +30,8 @@ L.LayerConfig = L.Class.extend(
 		else {
 			if(this._map.setView && json.center && json.zoom)
 					this._map.setView(json.center, json.zoom);
+			if(this._map.fitBounds && json.bounds)
+				this._map.fitBounds(json.bounds);
 			this.addLayers(json);
 		}
 	},
