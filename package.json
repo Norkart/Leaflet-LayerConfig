@@ -1,0 +1,25 @@
+{
+	"name": "leaflet-layerconfig",
+	"version": "0.1",
+	"author": "Norkart AS",
+	"description": "A plugin for Leaflet that provides an easy way of configuring the setup of a map from a JSON configuration.",
+	"license": "BSD-2-Clause",
+	"readmeFilename": "README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Norkart/Leaflet-LayerConfig.git"
+	},
+	"homepage": "https://github.com/Norkart/Leaflet-LayerConfig",
+	"bugs": {
+		"url": "https://github.com/Norkart/Leaflet-LayerConfig/issues"
+	},
+	"dependencies": {
+		"leaflet": ">=0.5.0"
+	},
+	"keywords": [
+		"maps",
+		"leaflet",
+		"client",
+		"layerconfig"
+	]
+}
