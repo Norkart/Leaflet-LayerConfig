@@ -10,6 +10,44 @@ Copyright 2014 Norkart AS
 (function () {
     'use strict';
 
+    function ajaxRequest(url, callback, onerror) {
+        var httpRequest;
+
+        var alertContents = function () {
+            if (httpRequest.readyState === 4) {
+                if (httpRequest.status === 200) {
+                    callback(httpRequest.responseText);
+                } else if (onerror) {
+                    onerror(httpRequest);
+                }
+            }
+        };
+
+        var makeRequest = function (url) {
+            if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+                httpRequest = new XMLHttpRequest();
+            } else if (window.ActiveXObject) { // IE
+                try {
+                    httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (e) {
+                    try {
+                        httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (ignore) {
+
+                    }
+                }
+            }
+
+            if (!httpRequest) {
+                throw new Error('Giving up :( Cannot create an XMLHTTP instance');
+            }
+            httpRequest.onreadystatechange = alertContents;
+            httpRequest.open('GET', url);
+            httpRequest.send();
+        };
+        makeRequest(url);
+    }
+
     L.LayerConfig = L.Class.extend({
 
         includes: L.Mixin.Events,
@@ -34,7 +72,7 @@ Copyright 2014 Norkart AS
                     }
                     self.addLayers(parsedJson);
                 };
-                this._ajaxRequest(json, success);
+                ajaxRequest(json, success);
             } else {
                 if (this._map.setView && json.center && json.zoom) {
                     this._map.setView(json.center, json.zoom);
@@ -44,44 +82,6 @@ Copyright 2014 Norkart AS
                 }
                 this.addLayers(json);
             }
-        },
-
-        _ajaxRequest: function (url, callback, onerror) {
-            var httpRequest;
-
-            var alertContents = function () {
-                if (httpRequest.readyState === 4) {
-                    if (httpRequest.status === 200) {
-                        callback(httpRequest.responseText);
-                    } else if (onerror) {
-                        onerror(httpRequest);
-                    }
-                }
-            };
-
-            var makeRequest = function (url) {
-                if (window.XMLHttpRequest) { // Mozilla, Safari, ...
-                    httpRequest = new XMLHttpRequest();
-                } else if (window.ActiveXObject) { // IE
-                    try {
-                        httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
-                    } catch (e) {
-                        try {
-                            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-                        } catch (ignore) {
-
-                        }
-                    }
-                }
-
-                if (!httpRequest) {
-                    throw new Error('Giving up :( Cannot create an XMLHTTP instance');
-                }
-                httpRequest.onreadystatechange = alertContents;
-                httpRequest.open('GET', url);
-                httpRequest.send();
-            };
-            makeRequest(url);
         },
 
         _evalJsonOptions: function (options) {
