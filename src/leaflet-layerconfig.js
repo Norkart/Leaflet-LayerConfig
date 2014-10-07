@@ -6,16 +6,20 @@ Copyright 2014 Norkart AS
 
 /*global L: false, ActiveXObject: false, window: false, XMLHttpRequest: false*/
 
-L.LayerConfig = L.Class.extend(
-{
+L.LayerConfig = L.Class.extend({
+    
     includes: L.Mixin.Events,
+    
     _map: null,
+    
     _json: null,
+
     initialize: function(map) {
         this._map = map;
 
 
     },
+
     parse: function (json) {
         this._json = json;
         
@@ -37,6 +41,7 @@ L.LayerConfig = L.Class.extend(
             this.addLayers(json);
         }
     },
+
     _ajaxRequest: function (url, callback, onerror) {
         var httpRequest;
 
@@ -75,6 +80,7 @@ L.LayerConfig = L.Class.extend(
           }
           makeRequest(url);
     },
+
     _evalJsonOptions: function (options) {
         if (options && options.style && typeof options.style == "string") {
             eval("options.style = "+options.style);
@@ -93,6 +99,7 @@ L.LayerConfig = L.Class.extend(
         }
         return options;
     },
+
     _addLayer: function(layer, json, addTo) {
         if(json.baseLayer && this._addedBaseLayer) {
             
@@ -110,6 +117,7 @@ L.LayerConfig = L.Class.extend(
 
         this.fire("LayerLoaded", { type: json.type, name: json.name, layer: layer, baseLayer: json.baseLayer });
     },
+
     addLayers: function (json, addTo) {
         if(!addTo)
             addTo = this._map;
@@ -160,6 +168,7 @@ L.LayerConfig = L.Class.extend(
         this.fire("stopLayerLoading");
         return this;
     },
+
     addMarker: function(json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.marker(json.latLng, json.options);
@@ -197,6 +206,7 @@ L.LayerConfig = L.Class.extend(
         return this;
 
     },
+
     addLayerGroup: function(json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.layerGroup();
@@ -207,6 +217,7 @@ L.LayerConfig = L.Class.extend(
         return this;
 
     },
+
     addFeatureGroup: function(json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.featureGroup();
@@ -218,6 +229,7 @@ L.LayerConfig = L.Class.extend(
         this._addLayer(l, json, addTo);
         return this;
     },
+
     addTileLayer: function (json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.tileLayer(json.url, json.options);
@@ -225,6 +237,7 @@ L.LayerConfig = L.Class.extend(
         
         return this;
     },
+
     addWMS: function (json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.tileLayer.wms(json.url, json.options);
@@ -232,6 +245,7 @@ L.LayerConfig = L.Class.extend(
         
         return this;
     },
+
     addCircleMarker: function (json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.circleMarker(json.latLng, json.options);
@@ -240,6 +254,7 @@ L.LayerConfig = L.Class.extend(
         this._addLayer(l, json, addTo);
         return this;
     },
+
     addCircle: function (json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.circle(json.latLng, json.radius, json.options);
@@ -248,6 +263,7 @@ L.LayerConfig = L.Class.extend(
         this._addLayer(l, json, addTo);
         return this;
     },
+
     addRectangle: function (json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.rectangle(json.path, json.options);
@@ -256,6 +272,7 @@ L.LayerConfig = L.Class.extend(
         this._addLayer(l, json, addTo);
         return this;
     },
+
     addPolygon: function (json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.polygon(json.path, json.options);
@@ -264,6 +281,7 @@ L.LayerConfig = L.Class.extend(
         this._addLayer(l, json, addTo);
         return this;
     },
+
     addLine: function (json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = L.polyline(json.path, json.options);
@@ -272,6 +290,7 @@ L.LayerConfig = L.Class.extend(
         this._addLayer(l, json, addTo);
         return this;
     },
+
     addLayer: function (json, addTo) {
         json.options = this._evalJsonOptions(json.options);
         var l = json.layer;
@@ -280,8 +299,7 @@ L.LayerConfig = L.Class.extend(
         this._addLayer(l, json, addTo);
         return this;
     }
-}
-);
+});
 
 L.layerConfig = function(json, map) {
     return new L.LayerConfig(json,map);
