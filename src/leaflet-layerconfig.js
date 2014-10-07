@@ -4,6 +4,8 @@ Library that communicates with a web service/reads a stored JavaScript object an
 Copyright 2014 Norkart AS
 */
 
+/*global L: false, ActiveXObject: false, window: false, XMLHttpRequest: false*/
+
 L.LayerConfig = L.Class.extend(
 {
     includes: L.Mixin.Events,
