@@ -48,6 +48,10 @@ Copyright 2014 Norkart AS
         makeRequest(url);
     }
 
+    function existsAndIsString(value) {
+        return !!(value && typeof value === "string");
+    }
+
     L.LayerConfig = L.Class.extend({
 
         includes: L.Mixin.Events,
@@ -86,20 +90,22 @@ Copyright 2014 Norkart AS
 
         _evalJsonOptions: function (options) {
             /*jslint evil: true */
-            if (options && options.style && typeof options.style === "string") {
-                eval("options.style = " + options.style);
-            }
-            if (options && options.onEachFeature && typeof options.onEachFeature === "string") {
-                eval("options.onEachFeature = " + options.onEachFeature);
-            }
-            if (options && options.filter && typeof options.filter === "string") {
-                eval("options.filter = " + options.filter);
-            }
-            if (options && options.pointToLayer && typeof options.pointToLayer === "string") {
-                eval("options.pointToLayer = " + options.pointToLayer);
-            }
-            if (options && options.coordsToLatLng && typeof options.coordsToLatLng === "string") {
-                eval("options.coordsToLatLng = " + options.coordsToLatLng);
+            if (options) {
+                if (existsAndIsString(options.style)) {
+                    eval("options.style = " + options.style);
+                }
+                if (existsAndIsString(options.onEachFeature)) {
+                    eval("options.onEachFeature = " + options.onEachFeature);
+                }
+                if (existsAndIsString(options.filter)) {
+                    eval("options.filter = " + options.filter);
+                }
+                if (existsAndIsString(options.pointToLayer)) {
+                    eval("options.pointToLayer = " + options.pointToLayer);
+                }
+                if (existsAndIsString(options.coordsToLatLng)) {
+                    eval("options.coordsToLatLng = " + options.coordsToLatLng);
+                }
             }
             /*jslint evil: false */
             return options;
