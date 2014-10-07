@@ -29,8 +29,8 @@ The object containing the information is pretty basic, here is a sample file add
 }
  ```
 
- To pass options to the layer simply add a options key to the layer. The options passed to the layer is in the same format as the LEaflet options found in the reference.
- Some option keys support functions if you want to pass a function to Leaflet trough a web service you need to put it in a single line string. A minifier can help with that. This is because JSON does not support functions or multiline strings.
+ To pass options to the layer simply add a options key to the layer. The options passed to the layer is in the same format as the Leaflet options found in the reference.
+ Some option keys support functions if you want to pass a function to Leaflet through a web service you need to put it in a single line string. A minifier can help with that. This is because JSON does not support functions or multiline strings.
 
 ###Other supported layer types:
 
