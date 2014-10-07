@@ -248,63 +248,52 @@ Copyright 2014 Norkart AS
             return this;
         },
 
-        addCircleMarker: function (json, addTo) {
-            json.options = this._evalJsonOptions(json.options);
-            var l = L.circleMarker(json.latLng, json.options);
+        addLayerAndPopup: function (l, json, addTo) {
             if (json.popupContent) {
                 l.bindPopup(json.popupContent);
             }
             this._addLayer(l, json, addTo);
+        },
+
+        addCircleMarker: function (json, addTo) {
+            json.options = this._evalJsonOptions(json.options);
+            var l = L.circleMarker(json.latLng, json.options);
+            this.addLayerAndPopup(l, json, addTo);
             return this;
         },
 
         addCircle: function (json, addTo) {
             json.options = this._evalJsonOptions(json.options);
             var l = L.circle(json.latLng, json.radius, json.options);
-            if (json.popupContent) {
-                l.bindPopup(json.popupContent);
-            }
-            this._addLayer(l, json, addTo);
+            this.addLayerAndPopup(l, json, addTo);
             return this;
         },
 
         addRectangle: function (json, addTo) {
             json.options = this._evalJsonOptions(json.options);
             var l = L.rectangle(json.path, json.options);
-            if (json.popupContent) {
-                l.bindPopup(json.popupContent);
-            }
-            this._addLayer(l, json, addTo);
+            this.addLayerAndPopup(l, json, addTo);
             return this;
         },
 
         addPolygon: function (json, addTo) {
             json.options = this._evalJsonOptions(json.options);
             var l = L.polygon(json.path, json.options);
-            if (json.popupContent) {
-                l.bindPopup(json.popupContent);
-            }
-            this._addLayer(l, json, addTo);
+            this.addLayerAndPopup(l, json, addTo);
             return this;
         },
 
         addLine: function (json, addTo) {
             json.options = this._evalJsonOptions(json.options);
             var l = L.polyline(json.path, json.options);
-            if (json.popupContent) {
-                l.bindPopup(json.popupContent);
-            }
-            this._addLayer(l, json, addTo);
+            this.addLayerAndPopup(l, json, addTo);
             return this;
         },
 
         addLayer: function (json, addTo) {
             json.options = this._evalJsonOptions(json.options);
             var l = json.layer;
-            if (json.popupContent) {
-                l.bindPopup(json.popupContent);
-            }
-            this._addLayer(l, json, addTo);
+            this.addLayerAndPopup(l, json, addTo);
             return this;
         }
     });
