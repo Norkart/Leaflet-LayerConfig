@@ -208,7 +208,7 @@ Copyright 2014 Norkart AS
                 console.debug(data);
             }
             if (json.url) {
-                this._ajaxRequest(json.url, onsuccess, onerror);
+                ajaxRequest(json.url, onsuccess, onerror);
             } else if (json.geojson) {
                 addGeoJSON(json.geojson, json.options, this._map);
             } else {
