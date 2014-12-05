@@ -1,6 +1,6 @@
 {
 	"name": "leaflet-layerconfig",
-	"version": "0.1",
+	"version": "0.0.1",
 	"author": "Norkart AS",
 	"description": "A plugin for Leaflet that provides an easy way of configuring the setup of a map from a JSON configuration.",
 	"license": "BSD-2-Clause",
