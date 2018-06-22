@@ -52,9 +52,7 @@ Copyright 2014 Norkart AS
         return !!(value && typeof value === "string");
     }
 
-    L.LayerConfig = L.Class.extend({
-
-        includes: L.Mixin.Events,
+ L.LayerConfig = L.Evented.extend({
 
         _map: null,
 
